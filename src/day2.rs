@@ -40,9 +40,7 @@ fn part2(directions: &[String]) -> i32 {
         match d[0] {
             "forward" => {
                 x += unit;
-                if aim > 0 {
-                    y += unit * aim;
-                }
+                y += unit * aim;
             },
             "up" => aim -= unit,
             "down" => aim += unit,
