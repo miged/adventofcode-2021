@@ -34,6 +34,8 @@ fn part1(input: &[String]) -> isize {
 
 fn part2(input: &[String]) -> isize {
     let mut ox_rating: Vec<String> = input.to_vec();
+    let mut co_rating: Vec<String> = input.to_vec();
+
     for c in 0..input[0].len() {
         if ox_rating.len() > 1 {
             let (common_bits, _) = get_common_bits(ox_rating.to_vec());
@@ -43,10 +45,7 @@ fn part2(input: &[String]) -> isize {
                 .cloned()
                 .collect::<Vec<String>>();
         }
-    }
 
-    let mut co_rating: Vec<String> = input.to_vec();
-    for c in 0..input[0].len() {
         if co_rating.len() > 1 {
             let (_, least_common_bits) = get_common_bits(co_rating.to_vec());
             co_rating = co_rating
@@ -59,7 +58,6 @@ fn part2(input: &[String]) -> isize {
 
     let ox_rating = isize::from_str_radix(&ox_rating[0], 2).unwrap();
     let co_rating = isize::from_str_radix(&co_rating[0], 2).unwrap();
-
     ox_rating * co_rating
 }
 
@@ -68,10 +66,12 @@ fn get_common_bits(input: Vec<String>) -> (Vec<u32>, Vec<u32>) {
     let mut least_common_bits: Vec<u32> = vec![];
 
     for c in 0..input[0].len() {
+        // get bits into columns
         let mut column: Vec<u32> = vec![];
-        for s in &input {
-            column.push(s.chars().nth(c).unwrap().to_digit(10).unwrap());
-        }
+        input.iter().for_each(|s|
+            column.push(s.chars().nth(c).unwrap().to_digit(10).unwrap())
+        );
+
         let zeroes = column.iter().filter(|&n| *n == 0).count();
         if zeroes > (column.len() / 2) {
             // most common: 0
