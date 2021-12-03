@@ -15,9 +15,6 @@ fn parse_file() -> Vec<String> {
 }
 
 fn part1(input: &[String]) -> isize {
-    let mut common_bits: Vec<isize> = vec![];
-    let mut least_common_bits: Vec<isize> = vec![];
-
     let (common_bits, least_common_bits) = get_common_bits(input.to_vec());
 
     // convert to binary string
@@ -97,5 +94,5 @@ fn test_p1() {
 
 #[test]
 fn test_p2() {
-    assert_eq!(part2(&parse_file()), 0);
+    assert_eq!(part2(&parse_file()), 587895);
 }
