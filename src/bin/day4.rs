@@ -43,36 +43,26 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
 fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     let mut score = 0;
     let mut winning_draw = 0;
+
     'outer: for draw in draws {
         // iterate over boards
-        for (board_number, board) in boards.clone().iter().enumerate() {
+        for (board_number, mut board) in boards.clone().iter().enumerate() {
             // iterate over board numbers
             for (row, row_el) in board.iter().enumerate() {
                 for (column, el) in row_el.iter().enumerate() {
                     if el == draw {
-                        boards[board_number][row][column] = -999;
+                        boards[board_number][row][column] = -1;
                     }
                 }
             }
+            board = &boards[board_number];
 
             // evaluate board
             for (row, _) in board.iter().enumerate() {
-                let board2 = boards[board_number].clone();
-                let rboard2 = rotate(board2.clone());
                 // if all numbers in row are marked
-                if board2[row] == [-999, -999, -999, -999, -999]
-                    || rboard2[row] == [-999, -999, -999, -999, -999]
-                {
-                    // get sum of unmarked numbers in won board
-                    for (_, row_el) in board.iter().enumerate() {
-                        for (_, el) in row_el.iter().enumerate() {
-                            if *el != -999 {
-                                score += el;
-                            }
-                        }
-                    }
-                    score -= draw;
-                    score *= draw;
+                if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
+                    // get final score
+                    score = board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
                     break 'outer;
                 }
             }
@@ -93,7 +83,6 @@ fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
             rotated[col][row] = arr[row][col];
         }
     }
-
     rotated
 }
 
