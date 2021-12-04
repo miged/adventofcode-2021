@@ -15,7 +15,7 @@ fn parse_file() -> Vec<String> {
 }
 
 fn part1(input: &[String]) -> isize {
-    let (common_bits, least_common_bits) = get_common_bits(input.to_vec());
+    let (common_bits, least_common_bits) = get_common_bits(&input.to_vec());
 
     // convert to binary string
     let common_binary = common_bits
@@ -38,7 +38,7 @@ fn part2(input: &[String]) -> isize {
 
     for c in 0..input[0].len() {
         if ox_rating.len() > 1 {
-            let (common_bits, _) = get_common_bits(ox_rating.to_vec());
+            let (common_bits, _) = get_common_bits(&ox_rating);
             ox_rating = ox_rating
                 .iter()
                 .filter(|x| x.chars().nth(c).unwrap().to_digit(10).unwrap() == common_bits[c])
@@ -47,7 +47,7 @@ fn part2(input: &[String]) -> isize {
         }
 
         if co_rating.len() > 1 {
-            let (_, least_common_bits) = get_common_bits(co_rating.to_vec());
+            let (_, least_common_bits) = get_common_bits(&co_rating);
             co_rating = co_rating
                 .iter()
                 .filter(|x| x.chars().nth(c).unwrap().to_digit(10).unwrap() == least_common_bits[c])
@@ -61,7 +61,7 @@ fn part2(input: &[String]) -> isize {
     ox_rating * co_rating
 }
 
-fn get_common_bits(input: Vec<String>) -> (Vec<u32>, Vec<u32>) {
+fn get_common_bits(input: &[String]) -> (Vec<u32>, Vec<u32>) {
     let mut common_bits: Vec<u32> = vec![];
     let mut least_common_bits: Vec<u32> = vec![];
 
