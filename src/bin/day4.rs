@@ -15,10 +15,7 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
     contents.push("".to_string());
 
     // parse draw numbers
-    let draws: Vec<i32> = contents[0]
-        .split(',')
-        .map(|i| i.parse().unwrap())
-        .collect();
+    let draws: Vec<i32> = contents[0].split(',').map(|i| i.parse().unwrap()).collect();
 
     // parse bingo boards
     let mut board: Vec<Vec<i32>> = Vec::new();
@@ -26,8 +23,7 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
     for row in contents.iter().skip(2) {
         if !row.is_empty() {
             board.push(
-                row
-                    .split_ascii_whitespace()
+                row.split_ascii_whitespace()
                     .map(|i| i.parse::<i32>().unwrap())
                     .collect(),
             );
@@ -44,12 +40,16 @@ fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     for draw in draws {
         // iterate over boards
         for (board_number, board) in boards.clone().iter().enumerate() {
-            let board = mark_board(board.clone(), draw);
-            boards[board_number] = board.to_vec();
+            boards[board_number] = mark_board(board.clone(), draw);
 
             // evaluate board
-            if check_board_win(board.clone()) {
-                return board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
+            if check_board_win(boards[board_number].clone()) {
+                return boards[board_number]
+                    .iter()
+                    .flatten()
+                    .filter(|x| **x != -1)
+                    .sum::<i32>()
+                    * draw;
             }
         }
     }
@@ -61,15 +61,20 @@ fn part2(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     for draw in draws {
         // iterate over boards
         for (board_number, board) in boards.clone().iter().enumerate() {
-            let board = mark_board(board.clone(), draw);
-            boards[board_number] = board.to_vec();
+            boards[board_number] = mark_board(board.clone(), draw);
 
             // evaluate board
-            if !boards_won.contains(&board_number) && check_board_win(board.clone()) {
+            if !boards_won.contains(&board_number) && check_board_win(boards[board_number].clone())
+            {
                 boards_won.push(board_number);
                 if (boards.len() - boards_won.len()) == 0 {
                     // get final score
-                    return board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
+                    return boards[board_number]
+                        .iter()
+                        .flatten()
+                        .filter(|x| **x != -1)
+                        .sum::<i32>()
+                        * draw;
                 }
             }
         }
