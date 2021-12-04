@@ -17,16 +17,16 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
     // parse draw numbers
     let draws: Vec<i32> = contents[0]
         .split(',')
-        .map(|i| i.parse::<i32>().unwrap())
+        .map(|i| i.parse().unwrap())
         .collect();
 
     // parse bingo boards
     let mut board: Vec<Vec<i32>> = Vec::new();
     let mut boards: Vec<Vec<Vec<i32>>> = Vec::new();
-    for row in 2..contents.len() {
-        if !contents[row].is_empty() {
+    for row in contents.iter().skip(2) {
+        if !row.is_empty() {
             board.push(
-                contents[row]
+                row
                     .split_ascii_whitespace()
                     .map(|i| i.parse::<i32>().unwrap())
                     .collect(),
@@ -41,72 +41,62 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
 }
 
 fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
-    let mut score = 0;
-
-    'outer: for draw in draws {
+    for draw in draws {
         // iterate over boards
-        for (board_number, mut board) in boards.clone().iter().enumerate() {
-            // iterate over board numbers
-            for (row, row_el) in board.iter().enumerate() {
-                for (column, el) in row_el.iter().enumerate() {
-                    if el == draw {
-                        boards[board_number][row][column] = -1;
-                    }
-                }
-            }
-            board = &boards[board_number];
+        for (board_number, board) in boards.clone().iter().enumerate() {
+            let board = mark_board(board.clone(), draw);
+            boards[board_number] = board.to_vec();
 
             // evaluate board
-            for (row, _) in board.iter().enumerate() {
-                // if all numbers in row are marked
-                if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
-                    // get final score
-                    score = board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
-                    break 'outer;
-                }
+            if check_board_win(board.clone()) {
+                return board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
             }
         }
     }
-
-    score
+    0
 }
 
 fn part2(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
-    let mut score = 0;
     let mut boards_won: Vec<usize> = Vec::new();
-
-    'outer: for draw in draws {
+    for draw in draws {
         // iterate over boards
-        for (board_number, mut board) in boards.clone().iter().enumerate() {
-            // iterate over board numbers
-            for (row, row_el) in board.iter().enumerate() {
-                for (column, el) in row_el.iter().enumerate() {
-                    if el == draw {
-                        boards[board_number][row][column] = -1;
-                    }
-                }
-            }
-            board = &boards[board_number];
+        for (board_number, board) in boards.clone().iter().enumerate() {
+            let board = mark_board(board.clone(), draw);
+            boards[board_number] = board.to_vec();
 
             // evaluate board
-            if !boards_won.contains(&board_number) {
-                'inner: for (row, _) in board.iter().enumerate() {
-                    // if all numbers in row are marked
-                    if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
-                        boards_won.push(board_number);
-                        if (boards.len() - boards_won.len()) == 0 {
-                            // get final score
-                            score = board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
-                            break 'outer;
-                        }
-                        break 'inner;
-                    }
+            if !boards_won.contains(&board_number) && check_board_win(board.clone()) {
+                boards_won.push(board_number);
+                if (boards.len() - boards_won.len()) == 0 {
+                    // get final score
+                    return board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
                 }
             }
         }
     }
+    0
+}
 
-    score
+fn mark_board(mut board: Vec<Vec<i32>>, draw: &i32) -> Vec<Vec<i32>> {
+    // iterate over board numbers
+    for (row, row_el) in board.clone().iter().enumerate() {
+        for (column, el) in row_el.iter().enumerate() {
+            if el == draw {
+                board[row][column] = -1;
+            }
+        }
+    }
+    board.to_vec()
+}
+
+fn check_board_win(board: Vec<Vec<i32>>) -> bool {
+    for (row, _) in board.iter().enumerate() {
+        // if all numbers in row are marked
+        if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
+            return true;
+        }
+    }
+    false
 }
 
 fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
