@@ -56,12 +56,16 @@ fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
             }
 
             // evaluate board
-            for (row, row_el) in board.iter().enumerate() {
+            for (row, _) in board.iter().enumerate() {
+                let board2 = boards[board_number].clone();
+                let rboard2 = rotate(board2.clone());
                 // if all numbers in row are marked
-                if boards[board_number][row] == [-999, -999, -999, -999, -999] {
+                if board2[row] == [-999, -999, -999, -999, -999]
+                    || rboard2[row] == [-999, -999, -999, -999, -999]
+                {
                     // get sum of unmarked numbers in won board
-                    for (row, row_el) in board.iter().enumerate() {
-                        for (column, el) in row_el.iter().enumerate() {
+                    for (_, row_el) in board.iter().enumerate() {
+                        for (_, el) in row_el.iter().enumerate() {
                             if *el != -999 {
                                 score += el;
                             }
@@ -83,12 +87,7 @@ fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
 // }
 
 fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-    let mut rotated: Vec<Vec<i32>> = Vec::new();
-
-    for _ in arr.clone() {
-        rotated.push(vec![]);
-    }
-
+    let mut rotated: Vec<Vec<i32>> = arr.clone();
     for (row, _) in arr.clone().into_iter().enumerate() {
         for (col, _) in arr[row].clone().into_iter().enumerate() {
             rotated[col][row] = arr[row][col];
@@ -101,7 +100,7 @@ fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
 #[test]
 fn test_p1() {
     let (draws, boards) = parse_file();
-    assert_eq!(part1(&draws, boards), 4512);
+    assert_eq!(part1(&draws, boards), 10374);
 }
 
 #[test]
