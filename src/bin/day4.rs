@@ -90,9 +90,10 @@ fn mark_board(mut board: Vec<Vec<i32>>, draw: &i32) -> Vec<Vec<i32>> {
 }
 
 fn check_board_win(board: Vec<Vec<i32>>) -> bool {
+    let rotated = rotate(board.clone());
     for (row, _) in board.iter().enumerate() {
         // if all numbers in row are marked
-        if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
+        if board[row] == vec![-1; 5] || rotated[row] == vec![-1; 5] {
             return true;
         }
     }
