@@ -43,13 +43,8 @@ fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
             boards[board_number] = mark_board(board.clone(), draw);
 
             // evaluate board
-            if check_board_win(boards[board_number].clone()) {
-                return boards[board_number]
-                    .iter()
-                    .flatten()
-                    .filter(|x| **x != -1)
-                    .sum::<i32>()
-                    * draw;
+            if check_board_win(&boards[board_number]) {
+                return get_score(&boards[board_number]) * draw;
             }
         }
     }
@@ -64,17 +59,11 @@ fn part2(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
             boards[board_number] = mark_board(board.clone(), draw);
 
             // evaluate board
-            if !boards_won.contains(&board_number) && check_board_win(boards[board_number].clone())
-            {
+            if !boards_won.contains(&board_number) && check_board_win(&boards[board_number]) {
                 boards_won.push(board_number);
                 if (boards.len() - boards_won.len()) == 0 {
                     // get final score
-                    return boards[board_number]
-                        .iter()
-                        .flatten()
-                        .filter(|x| **x != -1)
-                        .sum::<i32>()
-                        * draw;
+                    return get_score(&boards[board_number]) * draw;
                 }
             }
         }
@@ -94,8 +83,8 @@ fn mark_board(mut board: Vec<Vec<i32>>, draw: &i32) -> Vec<Vec<i32>> {
     board.to_vec()
 }
 
-fn check_board_win(board: Vec<Vec<i32>>) -> bool {
-    let rotated = rotate(board.clone());
+fn check_board_win(board: &[Vec<i32>]) -> bool {
+    let rotated = rotate(board);
     for (row, _) in board.iter().enumerate() {
         // if all numbers in row are marked
         if board[row] == vec![-1; 5] || rotated[row] == vec![-1; 5] {
@@ -105,14 +94,18 @@ fn check_board_win(board: Vec<Vec<i32>>) -> bool {
     false
 }
 
-fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-    let mut rotated: Vec<Vec<i32>> = arr.clone();
+fn rotate(arr: &[Vec<i32>]) -> Vec<Vec<i32>> {
+    let mut rotated: Vec<Vec<i32>> = arr.to_vec();
     for (row, _) in arr.iter().enumerate() {
         for (col, _) in arr[row].iter().enumerate() {
             rotated[col][row] = arr[row][col];
         }
     }
     rotated
+}
+
+fn get_score(board: &[Vec<i32>]) -> i32 {
+    board.iter().flatten().filter(|x| **x != -1).sum::<i32>()
 }
 
 #[test]
