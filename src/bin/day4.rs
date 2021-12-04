@@ -1,7 +1,7 @@
 pub fn main() {
     let (draws, boards) = parse_file();
-    println!("D4P1 result: {}", part1(&draws, boards));
-    // println!("D4P2 result: {}", part2(&input));
+    println!("D4P1 result: {}", part1(&draws, boards.clone()));
+    println!("D4P2 result: {}", part2(&draws, boards));
 }
 
 fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
@@ -42,7 +42,6 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
 
 fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     let mut score = 0;
-    let mut winning_draw = 0;
 
     'outer: for draw in draws {
         // iterate over boards
@@ -72,9 +71,50 @@ fn part1(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     score
 }
 
-// fn part2(input: &[String]) -> usize {
-//     todo!();
-// }
+fn part2(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
+    let mut score = 0;
+    let mut boards_won: Vec<usize> = Vec::new();
+    // let mut boardsc = boards.clone();
+
+    'outer: for draw in draws {
+        println!("{}", draw);
+        // iterate over boards
+        for (board_number, mut board) in boards.clone().iter().enumerate() {
+            if board_number == 71 {
+                println!("{:?}", board);
+            }
+            // iterate over board numbers
+            for (row, row_el) in board.iter().enumerate() {
+                for (column, el) in row_el.iter().enumerate() {
+                    if el == draw {
+                        boards[board_number][row][column] = -1;
+                    }
+                }
+            }
+            board = &boards[board_number];
+
+            // evaluate board
+            if !boards_won.contains(&board_number) {
+                for (row, _) in board.iter().enumerate() {
+                    // if all numbers in row are marked
+                    if board[row] == vec![-1; 5] || rotate(board.clone())[row] == vec![-1; 5] {
+                        boards_won.push(board_number);
+                        // boardsc.remove(board_number);
+                        // println!("{} won, {} left", board_number, boards.len() - boards_won.len());
+                        if (boards.len() - boards_won.len()) == 0 {
+                            // println!("{:?}", board);
+                            println!("{} {}", board.iter().flatten().filter(|x| **x != -1).sum::<i32>(), draw);
+                            score = board.iter().flatten().filter(|x| **x != -1).sum::<i32>() * draw;
+                            break 'outer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    score
+}
 
 fn rotate(arr: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let mut rotated: Vec<Vec<i32>> = arr.clone();
@@ -94,5 +134,6 @@ fn test_p1() {
 
 #[test]
 fn test_p2() {
+    // let (draws, boards) = parse_file();
     // assert_eq!(part2(&parse_file()), 0);
 }
