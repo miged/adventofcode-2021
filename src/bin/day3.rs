@@ -43,7 +43,7 @@ fn part2(input: &[String]) -> isize {
                 .iter()
                 .filter(|x| x.chars().nth(c).unwrap().to_digit(10).unwrap() == common_bits[c])
                 .cloned()
-                .collect::<Vec<String>>();
+                .collect();
         }
 
         if co_rating.len() > 1 {
@@ -52,7 +52,7 @@ fn part2(input: &[String]) -> isize {
                 .iter()
                 .filter(|x| x.chars().nth(c).unwrap().to_digit(10).unwrap() == least_common_bits[c])
                 .cloned()
-                .collect::<Vec<String>>();
+                .collect();
         }
     }
 
@@ -68,9 +68,9 @@ fn get_common_bits(input: Vec<String>) -> (Vec<u32>, Vec<u32>) {
     for c in 0..input[0].len() {
         // get bits into columns
         let mut column: Vec<u32> = vec![];
-        input.iter().for_each(|s|
-            column.push(s.chars().nth(c).unwrap().to_digit(10).unwrap())
-        );
+        input
+            .iter()
+            .for_each(|s| column.push(s.chars().nth(c).unwrap().to_digit(10).unwrap()));
 
         let zeroes = column.iter().filter(|&n| *n == 0).count();
         if zeroes > (column.len() / 2) {
