@@ -15,14 +15,8 @@ fn part1(input: &[String]) -> isize {
     let (common_bits, least_common_bits) = get_common_bits(&input.to_vec());
 
     // convert to binary string
-    let common_binary = common_bits
-        .iter()
-        .map(|x| x.to_string())
-        .collect::<String>();
-    let least_binary = least_common_bits
-        .iter()
-        .map(|x| x.to_string())
-        .collect::<String>();
+    let common_binary: String = common_bits.iter().map(|x| x.to_string()).collect();
+    let least_binary: String = least_common_bits.iter().map(|x| x.to_string()).collect();
 
     let gamma_rate = isize::from_str_radix(&common_binary, 2).unwrap();
     let epsilon_rate = isize::from_str_radix(&least_binary, 2).unwrap();
