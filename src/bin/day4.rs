@@ -56,14 +56,15 @@ fn part2(draws: &[i32], mut boards: Vec<Vec<Vec<i32>>>) -> i32 {
     for draw in draws {
         // iterate over boards
         for (board_number, board) in boards.clone().iter().enumerate() {
-            boards[board_number] = mark_board(board.clone(), draw);
+            if !boards_won.contains(&board_number) {
+                boards[board_number] = mark_board(board.clone(), draw);
 
-            // evaluate board
-            if !boards_won.contains(&board_number) && check_board_win(&boards[board_number]) {
-                boards_won.push(board_number);
-                if (boards.len() - boards_won.len()) == 0 {
-                    // get final score
-                    return get_score(&boards[board_number]) * draw;
+                // evaluate board
+                if check_board_win(&boards[board_number]) {
+                    boards_won.push(board_number);
+                    if (boards.len() - boards_won.len()) == 0 {
+                        return get_score(&boards[board_number]) * draw;
+                    }
                 }
             }
         }
