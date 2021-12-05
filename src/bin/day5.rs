@@ -1,7 +1,7 @@
 pub fn main() {
     let mut lines = parse_file();
-    println!("D5P1 result: {}", part1(&lines));
-    println!("D5P2 result: {}", part2(&mut lines));
+    println!("D5P1 result: {}", solve(&mut lines, true));
+    println!("D5P2 result: {}", solve(&mut lines, false));
 }
 
 #[derive(Debug)]
@@ -33,49 +33,24 @@ fn parse_file() -> Vec<Line> {
     entries
 }
 
-fn part1(lines: &[Line]) -> usize {
-    let mut grid: Vec<Vec<usize>> = vec![vec![0; 999]; 999];
-
-    for line in lines {
-        // skip diagonals
-        if line.start.0 != line.end.0 && line.start.1 != line.end.1 {
-            continue;
-        }
-        if line.start.0 == line.end.0 {
-            // vertical line
-            for i in line.start.1.min(line.end.1)..line.start.1.max(line.end.1) + 1 {
-                grid[i][line.start.0] += 1;
-            }
-        } else {
-            // horizontal line
-            for i in line.start.0.min(line.end.0)..line.start.0.max(line.end.0) + 1 {
-                grid[line.start.1][i] += 1;
-            }
-        }
-    }
-
-    // count overlapping points
-    grid.iter().flatten().filter(|x| **x > 1).count()
-}
-
-fn part2(lines: &mut [Line]) -> usize {
+fn solve(lines: &mut [Line], ignore_diagonals: bool) -> usize {
     let mut grid: Vec<Vec<usize>> = vec![vec![0; 999]; 999];
 
     for line in lines {
         if line.start.0 != line.end.0 && line.start.1 != line.end.1 {
             // diagonal line
-            for _ in line.start.1.min(line.end.1)..line.start.1.max(line.end.1) + 1 {
-                grid[line.start.1][line.start.0] += 1;
-                if line.start.0 < line.end.0 {
-                    line.start.0 += 1;
-                } else {
-                    line.start.0 -= 1;
-                }
+            if !ignore_diagonals {
+                for _ in line.start.1.min(line.end.1)..line.start.1.max(line.end.1) + 1 {
+                    grid[line.start.1][line.start.0] += 1;
 
-                if line.start.1 < line.end.1 {
-                    line.start.1 += 1;
-                } else {
-                    line.start.1 -= 1;
+                    match line.start.0 < line.end.0 {
+                        true => line.start.0 += 1,
+                        false => line.start.0 -= 1,
+                    }
+                    match line.start.1 < line.end.1 {
+                        true => line.start.1 += 1,
+                        false => line.start.1 -= 1,
+                    }
                 }
             }
         } else if line.start.0 == line.end.0 {
@@ -97,10 +72,10 @@ fn part2(lines: &mut [Line]) -> usize {
 
 #[test]
 fn test_p1() {
-    assert_eq!(part1(&parse_file()), 7644);
+    assert_eq!(solve(&mut parse_file(), true), 7644);
 }
 
 #[test]
 fn test_p2() {
-    assert_eq!(part2(&mut parse_file()), 18627);
+    assert_eq!(solve(&mut parse_file(), false), 18627);
 }
