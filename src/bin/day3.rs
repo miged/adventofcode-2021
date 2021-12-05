@@ -10,8 +10,8 @@ fn parse_file() -> Vec<String> {
     // parse file contents
     contents
         .lines()
-        .filter_map(|line| line.parse::<String>().ok())
-        .collect::<Vec<String>>()
+        .filter_map(|line| line.parse().ok())
+        .collect()
 }
 
 fn part1(input: &[String]) -> isize {

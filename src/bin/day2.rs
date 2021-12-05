@@ -10,19 +10,18 @@ fn parse_file() -> Vec<String> {
     // parse file contents
     contents
         .lines()
-        .filter_map(|line| line.parse::<String>().ok())
-        .collect::<Vec<String>>()
+        .filter_map(|line| line.parse().ok())
+        .collect()
 }
 
 fn part1(directions: &[String]) -> i32 {
-    let mut x = 0;
-    let mut y = 0;
+    let (mut x, mut y) = (0, 0);
 
     for d in directions
         .iter()
         .map(|d| d.split(' ').collect::<Vec<&str>>())
     {
-        let unit = d[1].parse::<i32>().unwrap();
+        let unit: i32 = d[1].parse().unwrap();
         match d[0] {
             "forward" => x += unit,
             "up" => y -= unit,
@@ -34,9 +33,7 @@ fn part1(directions: &[String]) -> i32 {
 }
 
 fn part2(directions: &[String]) -> i32 {
-    let mut x = 0;
-    let mut y = 0;
-    let mut aim = 0;
+    let (mut x, mut y, mut aim) = (0, 0, 0);
 
     for d in directions
         .iter()

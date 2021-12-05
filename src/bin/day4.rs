@@ -10,7 +10,7 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
     // parse file contents
     let mut contents: Vec<String> = contents
         .lines()
-        .filter_map(|line| line.parse::<String>().ok())
+        .filter_map(|line| line.parse().ok())
         .collect();
     contents.push("".to_string());
 
@@ -24,7 +24,7 @@ fn parse_file() -> (Vec<i32>, Vec<Vec<Vec<i32>>>) {
         if !row.is_empty() {
             board.push(
                 row.split_ascii_whitespace()
-                    .map(|i| i.parse::<i32>().unwrap())
+                    .map(|i| i.parse().unwrap())
                     .collect(),
             );
         } else {
@@ -105,7 +105,7 @@ fn rotate(arr: &[Vec<i32>]) -> Vec<Vec<i32>> {
 }
 
 fn get_score(board: &[Vec<i32>]) -> i32 {
-    board.iter().flatten().filter(|x| **x != -1).sum::<i32>()
+    board.iter().flatten().filter(|x| **x != -1).sum()
 }
 
 #[test]

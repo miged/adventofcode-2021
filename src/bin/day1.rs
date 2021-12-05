@@ -10,8 +10,8 @@ fn parse_file() -> Vec<i32> {
     // parse file contents
     contents
         .lines()
-        .filter_map(|line| line.parse::<i32>().ok())
-        .collect::<Vec<i32>>()
+        .filter_map(|line| line.parse().ok())
+        .collect()
 }
 
 fn part1(depths: &[i32]) -> usize {
