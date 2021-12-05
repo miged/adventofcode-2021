@@ -16,17 +16,15 @@ fn parse_file() -> Vec<Line> {
 
     for line in input.lines() {
         let (a, b) = line.split_once(" -> ").unwrap();
-        let (x1, y1) = a
-            .split_once(",")
-            .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
-            .unwrap();
-        let (x2, y2) = b
-            .split_once(",")
-            .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
-            .unwrap();
         entries.push(Line {
-            start: (x1, y1),
-            end: (x2, y2),
+            start: a
+                .split_once(",")
+                .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
+                .unwrap(),
+            end: b
+                .split_once(",")
+                .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
+                .unwrap(),
         });
     }
 
