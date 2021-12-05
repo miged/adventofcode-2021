@@ -7,10 +7,7 @@ pub fn main() {
 type Board = Vec<Vec<i32>>;
 
 fn parse_file() -> (Vec<i32>, Vec<Board>) {
-    let contents: String = include_str!("../inputs/4.txt").into();
-
-    // parse file contents
-    let mut contents: Vec<String> = contents
+    let mut contents: Vec<String> = include_str!("../inputs/4.txt")
         .lines()
         .filter_map(|line| line.parse().ok())
         .collect();

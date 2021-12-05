@@ -5,10 +5,7 @@ pub fn main() {
 }
 
 fn parse_file() -> Vec<String> {
-    let contents: String = include_str!("../inputs/3.txt").into();
-
-    // parse file contents
-    contents
+    include_str!("../inputs/3.txt")
         .lines()
         .filter_map(|line| line.parse().ok())
         .collect()
