@@ -32,7 +32,7 @@ fn parse_file() -> Vec<Line> {
 }
 
 fn solve(lines: &mut [Line], ignore_diagonals: bool) -> usize {
-    let mut grid: Vec<Vec<i32>> = vec![vec![0; 999]; 999];
+    let mut grid: Vec<Vec<u16>> = vec![vec![0; 999]; 999];
     for line in lines {
         if line.start.0 != line.end.0 && line.start.1 != line.end.1 {
             // diagonal line
