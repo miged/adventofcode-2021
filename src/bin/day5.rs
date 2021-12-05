@@ -11,22 +11,22 @@ struct Line {
 }
 
 fn parse_file() -> Vec<Line> {
-    let contents: Vec<String> = include_str!("../inputs/5.txt")
-        .lines()
-        .filter_map(|line| line.parse().ok())
-        .collect();
-
+    let input: &str = include_str!("../inputs/5.txt");
     let mut entries: Vec<Line> = Vec::new();
-    for row in contents {
-        let split: Vec<String> = row
-            .split_ascii_whitespace()
-            .map(|i| i.parse().unwrap())
-            .collect();
-        let tup1: Vec<i32> = split[0].split(',').map(|i| i.parse().unwrap()).collect();
-        let tup2: Vec<i32> = split[2].split(',').map(|i| i.parse().unwrap()).collect();
+
+    for line in input.lines() {
+        let (a, b) = line.split_once(" -> ").unwrap();
+        let (x1, y1) = a
+            .split_once(",")
+            .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
+            .unwrap();
+        let (x2, y2) = b
+            .split_once(",")
+            .map(|(x, y)| (x.parse().unwrap(), y.parse().unwrap()))
+            .unwrap();
         entries.push(Line {
-            start: (tup1[0], tup1[1]),
-            end: (tup2[0], tup2[1]),
+            start: (x1, y1),
+            end: (x2, y2),
         });
     }
 
@@ -59,7 +59,7 @@ fn solve(lines: &mut [Line], ignore_diagonals: bool) -> usize {
     }
 
     // count overlapping points
-    grid.iter().flatten().filter(|x| **x > 1).count()
+    grid.iter().flatten().filter(|&&n| n > 1).count()
 }
 
 #[test]
