@@ -1,7 +1,7 @@
 pub fn main() {
     let lines = parse_file();
     println!("D5P1 result: {}", part1(&lines));
-    println!("D5P2 result: {}", part2(&lines));
+    // println!("D5P2 result: {}", part2(&lines));
 }
 
 #[derive(Debug)]
