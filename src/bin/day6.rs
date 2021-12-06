@@ -1,32 +1,31 @@
-use std::collections::HashMap;
-
 pub fn main() {
-    let input = parse_file();
-    println!("D6P1 result: {}", solve(input.clone(), 80));
-    // println!("D6P2 result: {}", solve(input, 256));
+    let fish = parse_file();
+    println!("D6P1 result: {}", solve(fish.clone(), 18));
+    println!("D6P2 result: {}", solve(fish, 256));
 }
 
-fn parse_file() -> Vec<i8> {
-    include_str!("../inputs/6.txt")
+fn parse_file() -> Vec<usize> {
+    let contents: Vec<i8> = include_str!("../inputs/6.txt")
         .split(',')
         .map(|s| s.trim().parse().unwrap())
-        .collect()
+        .collect();
+
+    let mut fish: Vec<usize> = vec![0; 9];
+    for i in contents {
+        fish[i as usize] += 1;
+    }
+    fish
 }
 
-fn solve(mut fishes: Vec<i8>, days: i16) -> usize {
-    for i in 0..days {
-        println!("Iteration {}: {}", i, fishes.len());
-        // decrease timer
-        fishes = fishes.iter().map(|&n| n - 1).collect();
-
-        // produce new fish
-        let num_of_births: usize = fishes.iter().filter(|&&n| n == -1).count();
-        fishes.resize(fishes.len() + num_of_births, 8);
-
-        // reset timer
-        fishes = fishes.iter().map(|&n| if n == -1 {6} else {n}).collect();
+fn solve(mut fish: Vec<usize>, days: i16) -> usize {
+    for _ in 0..days {
+        let new_fish = fish[0];
+        fish[0] = 0;
+        fish.rotate_left(1);
+        fish[6] += new_fish;
+        fish[8] += new_fish;
     }
-    fishes.len()
+    fish.iter().sum()
 }
 
 #[test]
