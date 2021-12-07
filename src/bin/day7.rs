@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 
 pub fn main() {
     let input = parse_file();
-    println!("D7P1 result: {}", part1(input.clone()));
-    println!("D7P2 result: {}", part2(input));
+    println!("D7P1 result: {}", solve(input.clone(), true));
+    println!("D7P2 result: {}", solve(input, false));
 }
 
 fn parse_file() -> Vec<i32> {
@@ -13,34 +13,16 @@ fn parse_file() -> Vec<i32> {
         .collect()
 }
 
-fn part1(input: Vec<i32>) -> i32 {
-    let max: usize = *input.iter().max().unwrap() as usize;
+fn solve(crabs: Vec<i32>, constant_consumption: bool) -> i32 {
+    let max: usize = *crabs.iter().max().unwrap() as usize;
     let mut fuel_used: Vec<i32> = vec![0; max];
 
     for pos in 0..max {
-        for i in &input {
-            fuel_used[pos] += (i - pos as i32).abs() as i32;
-        }
-    }
-
-    let min_pos = fuel_used
-        .iter()
-        .enumerate()
-        .min_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(Ordering::Equal))
-        .map(|(index, _)| index)
-        .unwrap();
-
-    fuel_used[min_pos]
-}
-
-fn part2(input: Vec<i32>) -> i32 {
-    let max: usize = *input.iter().max().unwrap() as usize;
-    let mut fuel_used: Vec<i32> = vec![0; max];
-
-    for pos in 0..max {
-        for i in &input {
-            for distance in 0..(i - pos as i32).abs() {
-                fuel_used[pos] += 1 + distance;
+        for crab in &crabs {
+            let distance = (crab - pos as i32).abs();
+            match constant_consumption {
+                true => fuel_used[pos] += distance,
+                false => fuel_used[pos] += distance * (distance + 1) / 2,
             }
         }
     }
@@ -52,16 +34,15 @@ fn part2(input: Vec<i32>) -> i32 {
         .map(|(index, _)| index)
         .unwrap();
 
-    dbg!(min_pos);
     fuel_used[min_pos]
 }
 
 #[test]
 fn test_p1() {
-    assert_eq!(part1(parse_file()), 336721);
+    assert_eq!(solve(parse_file(), true), 336721);
 }
 
 #[test]
 fn test_p2() {
-    assert_eq!(part2(parse_file()), 91638945);
+    assert_eq!(solve(parse_file(), false), 91638945);
 }
