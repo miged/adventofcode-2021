@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 
 pub fn main() {
     let input = parse_file();
-    println!("D7P1 result: {}", solve(input.clone(), true));
-    println!("D7P2 result: {}", solve(input, false));
+    println!("D7P1 result: {}", solve(&input, true));
+    println!("D7P2 result: {}", solve(&input, false));
 }
 
 fn parse_file() -> Vec<i32> {
@@ -13,12 +13,12 @@ fn parse_file() -> Vec<i32> {
         .collect()
 }
 
-fn solve(crabs: Vec<i32>, constant_consumption: bool) -> i32 {
+fn solve(crabs: &[i32], constant_consumption: bool) -> i32 {
     let max: usize = *crabs.iter().max().unwrap() as usize;
     let mut fuel_used: Vec<i32> = vec![0; max];
 
     for pos in 0..max {
-        for crab in &crabs {
+        for crab in crabs {
             let distance = (crab - pos as i32).abs();
             match constant_consumption {
                 true => fuel_used[pos] += distance,
@@ -39,10 +39,10 @@ fn solve(crabs: Vec<i32>, constant_consumption: bool) -> i32 {
 
 #[test]
 fn test_p1() {
-    assert_eq!(solve(parse_file(), true), 336721);
+    assert_eq!(solve(&parse_file(), true), 336721);
 }
 
 #[test]
 fn test_p2() {
-    assert_eq!(solve(parse_file(), false), 91638945);
+    assert_eq!(solve(&parse_file(), false), 91638945);
 }
